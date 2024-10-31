@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="40fb1aaaed6843428a8af0feee7ea468" Name="Diagram1">
+        <EntityTypeShape EntityType="LearningDBModel.FoodItem" Width="1.5" PointX="3" PointY="9.25" />
+        <EntityTypeShape EntityType="LearningDBModel.StockEntry" Width="1.5" PointX="3" PointY="1.5" />
+        <EntityTypeShape EntityType="LearningDBModel.StockEntryDetail" Width="1.5" PointX="5.25" PointY="1.125" />
+        <EntityTypeShape EntityType="LearningDBModel.StockExit" Width="1.5" PointX="3" PointY="5.125" />
+        <EntityTypeShape EntityType="LearningDBModel.StockExitDetail" Width="1.5" PointX="7.5" PointY="3.125" />
+        <EntityTypeShape EntityType="LearningDBModel.UnitOfMeasure" Width="1.5" PointX="0.75" PointY="10" />
+        <EntityTypeShape EntityType="LearningDBModel.User" Width="1.5" PointX="0.75" PointY="3.875" />
+        <AssociationConnector Association="LearningDBModel.FK__FoodItem__unitOf__0519C6AF" />
+        <AssociationConnector Association="LearningDBModel.FK__StockEntr__foodI__108B795B" />
+        <AssociationConnector Association="LearningDBModel.FK__StockExit__foodI__1A14E395" />
+        <AssociationConnector Association="LearningDBModel.FK__StockEntr__stock__0F975522" />
+        <AssociationConnector Association="LearningDBModel.FK_StockEntry_User" />
+        <AssociationConnector Association="LearningDBModel.FK_StockExitDetail_StockEntryDetail" />
+        <AssociationConnector Association="LearningDBModel.FK__StockExit__stock__1920BF5C" />
+        <AssociationConnector Association="LearningDBModel.FK_StockExit_User" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,587 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="LearningDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="FoodItem">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="unitOfMeasureId" Type="bigint" />
+          <Property Name="description" Type="nvarchar" MaxLength="255" />
+          <Property Name="stockQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="alertThreshold" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="category" Type="nvarchar" MaxLength="50" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="updatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="StockEntry">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="entryDate" Type="date" Nullable="false" />
+          <Property Name="totalAmount" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="notes" Type="nvarchar" MaxLength="255" />
+          <Property Name="userSignId" Type="bigint" />
+          <Property Name="observation" Type="nvarchar" MaxLength="255" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="updatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="StockEntryDetail">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="stockEntryId" Type="bigint" Nullable="false" />
+          <Property Name="foodItemId" Type="bigint" Nullable="false" />
+          <Property Name="quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="unitPrice" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="totalPrice" Type="decimal" Precision="37" Scale="7" StoreGeneratedPattern="Computed" />
+          <Property Name="expirationDate" Type="date" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="updatedAt" Type="datetime" />
+          <Property Name="currentQuantity" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="StockExit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="exitDate" Type="date" Nullable="false" />
+          <Property Name="totalAmount" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="destination" Type="nvarchar" MaxLength="100" />
+          <Property Name="userSignId" Type="bigint" />
+          <Property Name="notes" Type="nvarchar" MaxLength="255" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="updatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="StockExitDetail">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="stockExitId" Type="bigint" Nullable="false" />
+          <Property Name="foodItemId" Type="bigint" Nullable="false" />
+          <Property Name="quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="observation" Type="nvarchar" MaxLength="255" />
+          <Property Name="createdAt" Type="datetime" />
+          <Property Name="updatedAt" Type="datetime" />
+          <Property Name="stockEntryDetailId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="UnitOfMeasure">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="shortName" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__FoodItem__unitOf__0519C6AF">
+          <End Role="UnitOfMeasure" Type="Self.UnitOfMeasure" Multiplicity="0..1" />
+          <End Role="FoodItem" Type="Self.FoodItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitOfMeasure">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="FoodItem">
+              <PropertyRef Name="unitOfMeasureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockEntr__foodI__108B795B">
+          <End Role="FoodItem" Type="Self.FoodItem" Multiplicity="1" />
+          <End Role="StockEntryDetail" Type="Self.StockEntryDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FoodItem">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockEntryDetail">
+              <PropertyRef Name="foodItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockEntr__stock__0F975522">
+          <End Role="StockEntry" Type="Self.StockEntry" Multiplicity="1" />
+          <End Role="StockEntryDetail" Type="Self.StockEntryDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockEntry">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockEntryDetail">
+              <PropertyRef Name="stockEntryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockExit__foodI__1A14E395">
+          <End Role="FoodItem" Type="Self.FoodItem" Multiplicity="1" />
+          <End Role="StockExitDetail" Type="Self.StockExitDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FoodItem">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExitDetail">
+              <PropertyRef Name="foodItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockExit__stock__1920BF5C">
+          <End Role="StockExit" Type="Self.StockExit" Multiplicity="1" />
+          <End Role="StockExitDetail" Type="Self.StockExitDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockExit">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExitDetail">
+              <PropertyRef Name="stockExitId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StockEntry_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="StockEntry" Type="Self.StockEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockEntry">
+              <PropertyRef Name="userSignId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StockExit_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="StockExit" Type="Self.StockExit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExit">
+              <PropertyRef Name="userSignId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StockExitDetail_StockEntryDetail">
+          <End Role="StockEntryDetail" Type="Self.StockEntryDetail" Multiplicity="0..1" />
+          <End Role="StockExitDetail" Type="Self.StockExitDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockEntryDetail">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExitDetail">
+              <PropertyRef Name="stockEntryDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LearningDBModelStoreContainer">
+          <EntitySet Name="FoodItem" EntityType="Self.FoodItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockEntry" EntityType="Self.StockEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockEntryDetail" EntityType="Self.StockEntryDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockExit" EntityType="Self.StockExit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockExitDetail" EntityType="Self.StockExitDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitOfMeasure" EntityType="Self.UnitOfMeasure" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__FoodItem__unitOf__0519C6AF" Association="Self.FK__FoodItem__unitOf__0519C6AF">
+            <End Role="UnitOfMeasure" EntitySet="UnitOfMeasure" />
+            <End Role="FoodItem" EntitySet="FoodItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockEntr__foodI__108B795B" Association="Self.FK__StockEntr__foodI__108B795B">
+            <End Role="FoodItem" EntitySet="FoodItem" />
+            <End Role="StockEntryDetail" EntitySet="StockEntryDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockEntr__stock__0F975522" Association="Self.FK__StockEntr__stock__0F975522">
+            <End Role="StockEntry" EntitySet="StockEntry" />
+            <End Role="StockEntryDetail" EntitySet="StockEntryDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockExit__foodI__1A14E395" Association="Self.FK__StockExit__foodI__1A14E395">
+            <End Role="FoodItem" EntitySet="FoodItem" />
+            <End Role="StockExitDetail" EntitySet="StockExitDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockExit__stock__1920BF5C" Association="Self.FK__StockExit__stock__1920BF5C">
+            <End Role="StockExit" EntitySet="StockExit" />
+            <End Role="StockExitDetail" EntitySet="StockExitDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StockEntry_User" Association="Self.FK_StockEntry_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="StockEntry" EntitySet="StockEntry" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StockExit_User" Association="Self.FK_StockExit_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="StockExit" EntitySet="StockExit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StockExitDetail_StockEntryDetail" Association="Self.FK_StockExitDetail_StockEntryDetail">
+            <End Role="StockEntryDetail" EntitySet="StockEntryDetail" />
+            <End Role="StockExitDetail" EntitySet="StockExitDetail" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="LearningDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ModelDB" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="FoodItems" EntityType="LearningDBModel.FoodItem" />
+          <EntitySet Name="StockEntries" EntityType="LearningDBModel.StockEntry" />
+          <EntitySet Name="StockEntryDetails" EntityType="LearningDBModel.StockEntryDetail" />
+          <EntitySet Name="StockExits" EntityType="LearningDBModel.StockExit" />
+          <EntitySet Name="StockExitDetails" EntityType="LearningDBModel.StockExitDetail" />
+          <EntitySet Name="UnitOfMeasures" EntityType="LearningDBModel.UnitOfMeasure" />
+          <EntitySet Name="Users" EntityType="LearningDBModel.User" />
+          <AssociationSet Name="FK__FoodItem__unitOf__0519C6AF" Association="LearningDBModel.FK__FoodItem__unitOf__0519C6AF">
+            <End Role="UnitOfMeasure" EntitySet="UnitOfMeasures" />
+            <End Role="FoodItem" EntitySet="FoodItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockEntr__foodI__108B795B" Association="LearningDBModel.FK__StockEntr__foodI__108B795B">
+            <End Role="FoodItem" EntitySet="FoodItems" />
+            <End Role="StockEntryDetail" EntitySet="StockEntryDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockExit__foodI__1A14E395" Association="LearningDBModel.FK__StockExit__foodI__1A14E395">
+            <End Role="FoodItem" EntitySet="FoodItems" />
+            <End Role="StockExitDetail" EntitySet="StockExitDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockEntr__stock__0F975522" Association="LearningDBModel.FK__StockEntr__stock__0F975522">
+            <End Role="StockEntry" EntitySet="StockEntries" />
+            <End Role="StockEntryDetail" EntitySet="StockEntryDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StockEntry_User" Association="LearningDBModel.FK_StockEntry_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="StockEntry" EntitySet="StockEntries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StockExitDetail_StockEntryDetail" Association="LearningDBModel.FK_StockExitDetail_StockEntryDetail">
+            <End Role="StockEntryDetail" EntitySet="StockEntryDetails" />
+            <End Role="StockExitDetail" EntitySet="StockExitDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StockExit__stock__1920BF5C" Association="LearningDBModel.FK__StockExit__stock__1920BF5C">
+            <End Role="StockExit" EntitySet="StockExits" />
+            <End Role="StockExitDetail" EntitySet="StockExitDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StockExit_User" Association="LearningDBModel.FK_StockExit_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="StockExit" EntitySet="StockExits" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="FoodItem">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="unitOfMeasureId" Type="Int64" />
+          <Property Name="description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="stockQuantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="alertThreshold" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UnitOfMeasure" Relationship="LearningDBModel.FK__FoodItem__unitOf__0519C6AF" FromRole="FoodItem" ToRole="UnitOfMeasure" />
+          <NavigationProperty Name="StockEntryDetails" Relationship="LearningDBModel.FK__StockEntr__foodI__108B795B" FromRole="FoodItem" ToRole="StockEntryDetail" />
+          <NavigationProperty Name="StockExitDetails" Relationship="LearningDBModel.FK__StockExit__foodI__1A14E395" FromRole="FoodItem" ToRole="StockExitDetail" />
+        </EntityType>
+        <EntityType Name="StockEntry">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="entryDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="totalAmount" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="userSignId" Type="Int64" />
+          <Property Name="observation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="StockEntryDetails" Relationship="LearningDBModel.FK__StockEntr__stock__0F975522" FromRole="StockEntry" ToRole="StockEntryDetail" />
+          <NavigationProperty Name="User" Relationship="LearningDBModel.FK_StockEntry_User" FromRole="StockEntry" ToRole="User" />
+        </EntityType>
+        <EntityType Name="StockEntryDetail">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="stockEntryId" Type="Int64" Nullable="false" />
+          <Property Name="foodItemId" Type="Int64" Nullable="false" />
+          <Property Name="quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="unitPrice" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="totalPrice" Type="Decimal" Precision="37" Scale="7" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="expirationDate" Type="DateTime" Precision="0" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+          <Property Name="currentQuantity" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="FoodItem" Relationship="LearningDBModel.FK__StockEntr__foodI__108B795B" FromRole="StockEntryDetail" ToRole="FoodItem" />
+          <NavigationProperty Name="StockEntry" Relationship="LearningDBModel.FK__StockEntr__stock__0F975522" FromRole="StockEntryDetail" ToRole="StockEntry" />
+          <NavigationProperty Name="StockExitDetails" Relationship="LearningDBModel.FK_StockExitDetail_StockEntryDetail" FromRole="StockEntryDetail" ToRole="StockExitDetail" />
+        </EntityType>
+        <EntityType Name="StockExit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="exitDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="totalAmount" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="destination" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="userSignId" Type="Int64" />
+          <Property Name="notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="StockExitDetails" Relationship="LearningDBModel.FK__StockExit__stock__1920BF5C" FromRole="StockExit" ToRole="StockExitDetail" />
+          <NavigationProperty Name="User" Relationship="LearningDBModel.FK_StockExit_User" FromRole="StockExit" ToRole="User" />
+        </EntityType>
+        <EntityType Name="StockExitDetail">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="stockExitId" Type="Int64" Nullable="false" />
+          <Property Name="foodItemId" Type="Int64" Nullable="false" />
+          <Property Name="quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="observation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="updatedAt" Type="DateTime" Precision="3" />
+          <Property Name="stockEntryDetailId" Type="Int64" />
+          <NavigationProperty Name="FoodItem" Relationship="LearningDBModel.FK__StockExit__foodI__1A14E395" FromRole="StockExitDetail" ToRole="FoodItem" />
+          <NavigationProperty Name="StockEntryDetail" Relationship="LearningDBModel.FK_StockExitDetail_StockEntryDetail" FromRole="StockExitDetail" ToRole="StockEntryDetail" />
+          <NavigationProperty Name="StockExit" Relationship="LearningDBModel.FK__StockExit__stock__1920BF5C" FromRole="StockExitDetail" ToRole="StockExit" />
+        </EntityType>
+        <EntityType Name="UnitOfMeasure">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="shortName" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FoodItems" Relationship="LearningDBModel.FK__FoodItem__unitOf__0519C6AF" FromRole="UnitOfMeasure" ToRole="FoodItem" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="StockEntries" Relationship="LearningDBModel.FK_StockEntry_User" FromRole="User" ToRole="StockEntry" />
+          <NavigationProperty Name="StockExits" Relationship="LearningDBModel.FK_StockExit_User" FromRole="User" ToRole="StockExit" />
+        </EntityType>
+        <Association Name="FK__FoodItem__unitOf__0519C6AF">
+          <End Type="LearningDBModel.UnitOfMeasure" Role="UnitOfMeasure" Multiplicity="0..1" />
+          <End Type="LearningDBModel.FoodItem" Role="FoodItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UnitOfMeasure">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="FoodItem">
+              <PropertyRef Name="unitOfMeasureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockEntr__foodI__108B795B">
+          <End Type="LearningDBModel.FoodItem" Role="FoodItem" Multiplicity="1" />
+          <End Type="LearningDBModel.StockEntryDetail" Role="StockEntryDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FoodItem">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockEntryDetail">
+              <PropertyRef Name="foodItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockExit__foodI__1A14E395">
+          <End Type="LearningDBModel.FoodItem" Role="FoodItem" Multiplicity="1" />
+          <End Type="LearningDBModel.StockExitDetail" Role="StockExitDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FoodItem">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExitDetail">
+              <PropertyRef Name="foodItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockEntr__stock__0F975522">
+          <End Type="LearningDBModel.StockEntry" Role="StockEntry" Multiplicity="1" />
+          <End Type="LearningDBModel.StockEntryDetail" Role="StockEntryDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockEntry">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockEntryDetail">
+              <PropertyRef Name="stockEntryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StockEntry_User">
+          <End Type="LearningDBModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="LearningDBModel.StockEntry" Role="StockEntry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockEntry">
+              <PropertyRef Name="userSignId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StockExitDetail_StockEntryDetail">
+          <End Type="LearningDBModel.StockEntryDetail" Role="StockEntryDetail" Multiplicity="0..1" />
+          <End Type="LearningDBModel.StockExitDetail" Role="StockExitDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockEntryDetail">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExitDetail">
+              <PropertyRef Name="stockEntryDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StockExit__stock__1920BF5C">
+          <End Type="LearningDBModel.StockExit" Role="StockExit" Multiplicity="1" />
+          <End Type="LearningDBModel.StockExitDetail" Role="StockExitDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StockExit">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExitDetail">
+              <PropertyRef Name="stockExitId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StockExit_User">
+          <End Type="LearningDBModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="LearningDBModel.StockExit" Role="StockExit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StockExit">
+              <PropertyRef Name="userSignId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LearningDBModelStoreContainer" CdmEntityContainer="ModelDB">
+          <EntitySetMapping Name="FoodItems">
+            <EntityTypeMapping TypeName="LearningDBModel.FoodItem">
+              <MappingFragment StoreEntitySet="FoodItem">
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="category" ColumnName="category" />
+                <ScalarProperty Name="alertThreshold" ColumnName="alertThreshold" />
+                <ScalarProperty Name="stockQuantity" ColumnName="stockQuantity" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="unitOfMeasureId" ColumnName="unitOfMeasureId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockEntries">
+            <EntityTypeMapping TypeName="LearningDBModel.StockEntry">
+              <MappingFragment StoreEntitySet="StockEntry">
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="observation" ColumnName="observation" />
+                <ScalarProperty Name="userSignId" ColumnName="userSignId" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="totalAmount" ColumnName="totalAmount" />
+                <ScalarProperty Name="entryDate" ColumnName="entryDate" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockEntryDetails">
+            <EntityTypeMapping TypeName="LearningDBModel.StockEntryDetail">
+              <MappingFragment StoreEntitySet="StockEntryDetail">
+                <ScalarProperty Name="currentQuantity" ColumnName="currentQuantity" />
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="expirationDate" ColumnName="expirationDate" />
+                <ScalarProperty Name="totalPrice" ColumnName="totalPrice" />
+                <ScalarProperty Name="unitPrice" ColumnName="unitPrice" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="foodItemId" ColumnName="foodItemId" />
+                <ScalarProperty Name="stockEntryId" ColumnName="stockEntryId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockExits">
+            <EntityTypeMapping TypeName="LearningDBModel.StockExit">
+              <MappingFragment StoreEntitySet="StockExit">
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="userSignId" ColumnName="userSignId" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="totalAmount" ColumnName="totalAmount" />
+                <ScalarProperty Name="exitDate" ColumnName="exitDate" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockExitDetails">
+            <EntityTypeMapping TypeName="LearningDBModel.StockExitDetail">
+              <MappingFragment StoreEntitySet="StockExitDetail">
+                <ScalarProperty Name="stockEntryDetailId" ColumnName="stockEntryDetailId" />
+                <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="observation" ColumnName="observation" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="foodItemId" ColumnName="foodItemId" />
+                <ScalarProperty Name="stockExitId" ColumnName="stockExitId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UnitOfMeasures">
+            <EntityTypeMapping TypeName="LearningDBModel.UnitOfMeasure">
+              <MappingFragment StoreEntitySet="UnitOfMeasure">
+                <ScalarProperty Name="shortName" ColumnName="shortName" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="LearningDBModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Aucun" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
